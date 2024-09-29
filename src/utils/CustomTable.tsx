@@ -1,5 +1,4 @@
 import { Space, Table, TableProps, Tag } from 'antd';
-import React from 'react'
 import trashCan from "../assets/trash-icon.svg";
 import penIcon from "../assets/edit-icon.svg";
 interface CustomTableProps {
