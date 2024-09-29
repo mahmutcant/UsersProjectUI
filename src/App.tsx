@@ -10,13 +10,14 @@ import phoneIcon from "./assets/phone-icon.svg";
 import userCard from "./assets/address-card.svg"
 import CustomTable, { UserType } from './utils/CustomTable';
 import EditInput from './components/EditInput';
-
+import { debounce } from "lodash";
 function App() {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<UserType>();
-  const [isUpdateSuccess,setIsUpdateSuccess] = useState<boolean>(false);
+  const [isUpdateSuccess, setIsUpdateSuccess] = useState<boolean>(false);
+  const [search, setSearch] = useState<string>("");
   const handleUserInfoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     if (selectedUser) {
@@ -26,25 +27,28 @@ function App() {
       });
     }
   };
-  const openSuccessNotification = (message:string) => {
+  const handleSearch = debounce((e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearch(e.target.value)
+  }, 500)
+  const openSuccessNotification = (message: string) => {
     notification.success({
       message: <div className='font-semibold text-[#389E0D] flex items-center justify-center'>{message}</div>,
-      type:'success',
-      style: {backgroundColor: "#F6FFED"}
+      type: 'success',
+      style: { backgroundColor: "#F6FFED" }
     });
   };
   const openFailedNotification = (message: string) => {
     notification.error({
       message: <div className='font-semibold text-[#842029] flex items-center justify-center'>{message}</div>,
-      type:'error',
-      style: {backgroundColor: "#F8D7DA"}
+      type: 'error',
+      style: { backgroundColor: "#F8D7DA" }
     });
   }
   const fetchUsers = async () => {
-    const { data, total } = await getAllUsers(pageSize, page)
+    const { data, total } = await getAllUsers(pageSize, page, search.length > 0 ? search : undefined)
     return { data, total };
   };
-  const { data, error, isLoading } = useQuery(['userData', page, pageSize,isUpdateSuccess],fetchUsers);
+  const { data, error, isLoading } = useQuery(['userData', page, pageSize, isUpdateSuccess, search], fetchUsers);
 
   const handleOk = () => {
     updateUserInfo(selectedUser!).then(() => {
@@ -54,7 +58,7 @@ function App() {
     }).catch(() => {
       openFailedNotification("An Error Was Encountered While Updating The User")
     })
-    
+
   };
 
   const handleCancel = () => {
@@ -67,11 +71,38 @@ function App() {
 
   return (
     <>
-      {(!error && !isLoading && data?.data) && <div className='flex justify-center mt-12'>
-        
-        <CustomTable data={data.data} page={page} pageSize={pageSize} setPage={setPage} setPageSize={setPageSize} total={data.total} showModal={showModal} />
-      </div>}
-      <Modal width={"20%"} title={(selectedUser) && selectedUser.name + " " + selectedUser.surname} open={isModalOpen} okText="Save" onOk={handleOk} onCancel={handleCancel}>
+      <div className='flex flex-col justify-center mt-10 items-center'>
+        <div className='flex w-full mb-5 items-end justify-center'>
+          <div></div>
+          <div className='flex w-1/4'>
+            <input
+              onChange={(e) => handleSearch(e)}
+              placeholder='Search'
+              type="text"
+              className='border p-2 px-5 w-full rounded-full focus:outline-none focus:border-sky-500 focus:ring-sky-500'
+            />
+          </div>
+        </div>
+        {(!error && !isLoading && data?.data) &&
+          <CustomTable
+            data={data.data}
+            page={page}
+            pageSize={pageSize}
+            setPage={setPage}
+            setPageSize={setPageSize}
+            total={data.total}
+            showModal={showModal}
+          />
+        }
+      </div>
+      <Modal
+        width={"20%"}
+        title={(selectedUser) && selectedUser.name + " " + selectedUser.surname}
+        open={isModalOpen}
+        okText="Save"
+        onOk={handleOk}
+        onCancel={handleCancel}
+      >
         <div className='flex flex-col gap-3 items-center my-8 mx-4'>
           {selectedUser &&
             <>
