@@ -9,6 +9,7 @@ interface CustomTableProps {
     pageSize:number;
     setPage: (page:number) => void;
     setPageSize: (pageSize:number) => void;
+    showDeleteModal: (id:number) => void;
 }
 export interface UserType {
     id: number;
@@ -19,10 +20,9 @@ export interface UserType {
     phone: string;
     district: string;
     role: string;
-  }
-
-
-const CustomTable = ({data,total,page,pageSize,showModal,setPage,setPageSize}: CustomTableProps) => {
+    password?: string;
+}
+const CustomTable = ({data,total,page,pageSize,showModal,setPage,setPageSize,showDeleteModal}: CustomTableProps) => {
     const footer = () => {
         return (
             <div className='flex justify-end'>{data && total} Users found</div>
@@ -84,9 +84,9 @@ const CustomTable = ({data,total,page,pageSize,showModal,setPage,setPageSize}: C
         {
           title: '',
           key: 'action',
-          render: () => (
+          render: (_,data) => (
             <Space size="middle">
-              <a><img src={trashCan} width={20} height={20} alt="" /></a>
+              <button onClick={() => showDeleteModal(data.id)}><img src={trashCan} width={20} height={20} alt="" /></button>
             </Space>
           ),
           width: "20%",

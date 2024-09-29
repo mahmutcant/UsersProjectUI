@@ -25,3 +25,27 @@ export const updateUserInfo = async(userInfo:UserType) => {
     
   return response.data;
 }
+
+export const deleteUser = async(id:number,password:string) => {
+  const response = await axios.delete(`${baseURL}/users/${id}`, { data: {
+    "password": password
+  }});
+  return response.data;
+}
+
+export const createNewUser = async(userInfo:UserType) => {
+  const response = await axios.post(
+      `${baseURL}/users/save`,
+      { 
+        name: userInfo.name,
+        surname: userInfo.surname,
+        email: userInfo.email,
+        password: userInfo.password,
+        phone: userInfo.phone,
+        district: userInfo.district,
+        role: userInfo.role
+      }
+    );
+    
+  return response.data;
+}
