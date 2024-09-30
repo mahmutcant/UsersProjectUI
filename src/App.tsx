@@ -160,7 +160,7 @@ function App() {
               <EditInput icon={userIcon} value={selectedUser.name} name="name" handleChange={(e) => handleUserInfoChange(e)} type='text'/>
               <EditInput icon={userCard} value={selectedUser.surname} name="surname" handleChange={(e) => handleUserInfoChange(e)} type='text'/>
               <EditInput icon={mapIcon} value={selectedUser.district} name="district" handleChange={(e) => handleUserInfoChange(e)} type='text'/>
-              <EditInput icon={phoneIcon} value={selectedUser.phone} name="phone" handleChange={(e) => handleUserInfoChange(e)} type='password'/>
+              <EditInput icon={phoneIcon} value={selectedUser.phone} name="phone" handleChange={(e) => handleUserInfoChange(e)} type='phone'/>
               <form className="w-full mx-auto">
                 <label htmlFor="countries" className="block mb-2 text-sm font-medium text-gray-900">Select a Role</label>
                 <select name='role' onChange={(e) => handleUserInfoChange(e)} defaultValue={selectedUser.role} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
